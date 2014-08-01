@@ -13,5 +13,6 @@
 + (UIColor *)primaryColor;
 + (UIColor *)primaryColorFaded;
 + (UIFont *)primaryFont;
++ (UIFont *)primaryFontLarge;
 
 @end

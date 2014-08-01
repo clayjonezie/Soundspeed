@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F2CF5B1198B33D200C55E22 /* SSRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CF5B0198B33D200C55E22 /* SSRecordViewController.m */; };
+		6F2CF5B4198B33DC00C55E22 /* SSListenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CF5B3198B33DC00C55E22 /* SSListenViewController.m */; };
+		6F2CF5B9198B395300C55E22 /* SSSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CF5B8198B395300C55E22 /* SSSettingsViewController.m */; };
 		FF6C3B3D1989F58C002475F6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B3C1989F58C002475F6 /* Foundation.framework */; };
 		FF6C3B3F1989F58C002475F6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B3E1989F58C002475F6 /* CoreGraphics.framework */; };
 		FF6C3B411989F58C002475F6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B401989F58C002475F6 /* UIKit.framework */; };
@@ -35,6 +38,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6F2CF5AF198B33D200C55E22 /* SSRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSRecordViewController.h; sourceTree = "<group>"; };
+		6F2CF5B0198B33D200C55E22 /* SSRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSRecordViewController.m; sourceTree = "<group>"; };
+		6F2CF5B2198B33DC00C55E22 /* SSListenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSListenViewController.h; sourceTree = "<group>"; };
+		6F2CF5B3198B33DC00C55E22 /* SSListenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSListenViewController.m; sourceTree = "<group>"; };
+		6F2CF5B7198B395300C55E22 /* SSSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSSettingsViewController.h; sourceTree = "<group>"; };
+		6F2CF5B8198B395300C55E22 /* SSSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSSettingsViewController.m; sourceTree = "<group>"; };
 		FF6C3B391989F58C002475F6 /* Soundspeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soundspeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF6C3B3C1989F58C002475F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FF6C3B3E1989F58C002475F6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -83,6 +92,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6F2CF5B5198B33EF00C55E22 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FF6C3B741989FD20002475F6 /* SSTabBar.h */,
+				FF6C3B751989FD20002475F6 /* SSTabBar.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		6F2CF5B6198B33F400C55E22 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				6F2CF5B7198B395300C55E22 /* SSSettingsViewController.h */,
+				6F2CF5B8198B395300C55E22 /* SSSettingsViewController.m */,
+				6F2CF5AF198B33D200C55E22 /* SSRecordViewController.h */,
+				6F2CF5B0198B33D200C55E22 /* SSRecordViewController.m */,
+				6F2CF5B2198B33DC00C55E22 /* SSListenViewController.h */,
+				6F2CF5B3198B33DC00C55E22 /* SSListenViewController.m */,
+				FF6C3B6E1989F753002475F6 /* SSTabBarController.h */,
+				FF6C3B6F1989F753002475F6 /* SSTabBarController.m */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
 		FF6C3B301989F58C002475F6 = {
 			isa = PBXGroup;
 			children = (
@@ -119,10 +152,8 @@
 				FF6C3B721989F8CC002475F6 /* SSStylesheet.m */,
 				FF6C3B4B1989F58C002475F6 /* SSAppDelegate.h */,
 				FF6C3B4C1989F58C002475F6 /* SSAppDelegate.m */,
-				FF6C3B6E1989F753002475F6 /* SSTabBarController.h */,
-				FF6C3B6F1989F753002475F6 /* SSTabBarController.m */,
-				FF6C3B741989FD20002475F6 /* SSTabBar.h */,
-				FF6C3B751989FD20002475F6 /* SSTabBar.m */,
+				6F2CF5B6198B33F400C55E22 /* View Controllers */,
+				6F2CF5B5198B33EF00C55E22 /* Views */,
 				FF6C3B5B1989F58D002475F6 /* SoundspeedTests */,
 				FF6C3B4E1989F58C002475F6 /* Images.xcassets */,
 				FF6C3B431989F58C002475F6 /* Supporting Files */,
@@ -256,10 +287,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				FF6C3B4D1989F58C002475F6 /* SSAppDelegate.m in Sources */,
+				6F2CF5B4198B33DC00C55E22 /* SSListenViewController.m in Sources */,
 				FF6C3B731989F8CC002475F6 /* SSStylesheet.m in Sources */,
+				6F2CF5B9198B395300C55E22 /* SSSettingsViewController.m in Sources */,
 				FF6C3B701989F753002475F6 /* SSTabBarController.m in Sources */,
 				FF6C3B761989FD20002475F6 /* SSTabBar.m in Sources */,
 				FF6C3B491989F58C002475F6 /* main.m in Sources */,
+				6F2CF5B1198B33D200C55E22 /* SSRecordViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,6 +492,7 @@
 				FF6C3B671989F58D002475F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FF6C3B681989F58D002475F6 /* Build configuration list for PBXNativeTarget "SoundspeedTests" */ = {
 			isa = XCConfigurationList;
@@ -466,6 +501,7 @@
 				FF6C3B6A1989F58D002475F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

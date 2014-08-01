@@ -12,15 +12,19 @@
 @implementation SSStylesheet
 
 + (UIColor *)primaryColor  {
-    return [UIColor colorWithRed:0.0f green:163.0f / 255.0f blue:178.0f / 255.0f alpha:1.0f];
+  return [UIColor colorWithRed:0.0f green:163.0f / 255.0f blue:178.0f / 255.0f alpha:1.0f];
 }
 
 + (UIColor *)primaryColorFaded {
-    return [UIColor colorWithRed:0.0f green:163.0f / 255.0f blue:178.0f / 255.0f alpha:0.6f];
+  return [UIColor colorWithRed:0.0f green:163.0f / 255.0f blue:178.0f / 255.0f alpha:0.6f];
 }
 
 + (UIFont *)primaryFont {
-    return [UIFont fontWithName:@"AppleSDGothicNeo-Light" size:12.0f];
+  return [UIFont fontWithName:@"AppleSDGothicNeo-Light" size:12.0f];
+}
+
++ (UIFont *)primaryFontLarge {
+  return [UIFont fontWithName:@"AppleSDGothicNeo-Light" size:18.0f];
 }
 
 @end

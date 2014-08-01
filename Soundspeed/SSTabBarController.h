@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "SSTabBar.h"
+#import "SSListenViewController.h"
+#import "SSRecordViewController.h"
+#import "SSSettingsViewController.h"
 
-@interface SSTabBarController : UIViewController
+@interface SSTabBarController : UIViewController <SSTabBarDelegate, UINavigationBarDelegate>
 
 @property (nonatomic, readonly) SSTabBar *tabBar;
+@property (nonatomic) SSListenViewController *listenVC;
+@property (nonatomic) SSRecordViewController *recordVC;
+@property (nonatomic) SSSettingsViewController *settingsVC;
 
 @end
