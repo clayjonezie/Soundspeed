@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>EBB16979-EFE7-4144-B7C5-3ACDD763B290</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Soundspeed</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D0449CD5-9533-441C-AF7B-42E3B4F8CCD1</key>
+		<string>https://github.com/clayjonezie/Soundspeed.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Soundspeed.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D0449CD5-9533-441C-AF7B-42E3B4F8CCD1</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/clayjonezie/Soundspeed.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D0449CD5-9533-441C-AF7B-42E3B4F8CCD1</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D0449CD5-9533-441C-AF7B-42E3B4F8CCD1</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Soundspeed</string>
+		</dict>
+	</array>
+</dict>
+</plist>
