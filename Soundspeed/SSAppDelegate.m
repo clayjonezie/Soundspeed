@@ -8,6 +8,7 @@
 
 #import "SSAppDelegate.h"
 #import "SSTabBarController.h"
+#import <Dropbox/Dropbox.h>
 
 @interface SSAppDelegate ()
 
@@ -27,6 +28,10 @@
   _navController = [[UINavigationController alloc] init];
   [_navController pushViewController:_tabBarController animated:NO];
   [self.window setRootViewController:_navController];
+  
+  // setup dropbox
+  DBAccountManager *accountManager = [[DBAccountManager alloc] initWithAppKey:@"59gw8vscdz1u5oc" secret:@"xg6gb603nla3kn0"];
+  [DBAccountManager setSharedManager:accountManager];
   
   return YES;
 }

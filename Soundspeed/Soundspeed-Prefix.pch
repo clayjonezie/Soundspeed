@@ -15,4 +15,11 @@
     #import <Foundation/Foundation.h>
 #endif
 
+#define QuickAlert(STR) ([[[UIAlertView alloc] initWithTitle:@"Alert" \
+message:STR \
+delegate:nil \
+cancelButtonTitle:@"OK" \
+otherButtonTitles:nil] show])
+
 #import "SSStylesheet.h"
+#import "SSHelper.h"

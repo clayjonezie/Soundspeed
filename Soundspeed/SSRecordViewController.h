@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 
-@interface SSRecordViewController : UIViewController
+@interface SSRecordViewController : UIViewController<AVAudioRecorderDelegate>
+
+@property BOOL recording;
 
 @end

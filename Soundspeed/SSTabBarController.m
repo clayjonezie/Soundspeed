@@ -8,6 +8,7 @@
 
 #import "SSTabBarController.h"
 #import "SSStylesheet.h"
+#import <Dropbox/Dropbox.h>
 
 const CGFloat SSTabBarHeight = 49.0f;
 
@@ -46,6 +47,10 @@ const CGFloat SSTabBarHeight = 49.0f;
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
+  
+  if (![[DBAccountManager sharedManager] linkedAccount]) {
+    [self showLinkAlert];
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -66,11 +71,15 @@ const CGFloat SSTabBarHeight = 49.0f;
     [_recordVC.view removeFromSuperview];
     [self.view addSubview:_listenVC.view];
   }
-    
 }
 
 -(void)settingsButtonTapped {
   [self.navigationController pushViewController:_settingsVC animated:YES];
+}
+
+- (void)showLinkAlert {
+  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"First things first" message:@"Tap Settings to link a Dropbox account." delegate:nil cancelButtonTitle:@"Ok." otherButtonTitles:nil];
+  [alertView show];
 }
 
 @end
