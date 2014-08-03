@@ -7,7 +7,7 @@
 //
 
 #import "SSListenViewController.h"
-
+#import "SSDropboxHelper.h"
 @interface SSListenViewController ()
 
 @property (nonatomic) UISegmentedControl *jumpControl;
@@ -25,6 +25,8 @@
 @property (nonatomic) SSPlaybackSpeed playbackSpeed;
 
 @property (nonatomic) SSDropboxChooser *chooser;
+
+@property (nonatomic) UIActivityIndicatorView *spinner;
 
 @end
 
@@ -59,6 +61,7 @@
   [self.view addSubview:_recordingLabel];
   
   _playbackButton = [UIButton new];
+  [_playbackButton addObserver:self forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:nil];
 
   [self.view addSubview:_playbackButton];
   [_playbackButton setTitle:@"foo" forState:UIControlStateNormal];
@@ -66,7 +69,8 @@
   _playbackSpeedButton = [UIButton new];
   [_playbackSpeedButton.titleLabel setFont:[SSStylesheet primaryFontLarge]];
   [_playbackSpeedButton setTitleColor:[SSStylesheet primaryColor] forState:UIControlStateNormal];
-  [_playbackSpeedButton setTitleColor:[SSStylesheet primaryColorFaded] forState:UIControlStateHighlighted | UIControlStateDisabled];
+  [_playbackSpeedButton setTitleColor:[SSStylesheet primaryColorFaded] forState:UIControlStateHighlighted];
+  [_playbackSpeedButton setTitleColor:[SSStylesheet primaryColorFaded] forState:UIControlStateDisabled];
   [_playbackSpeedButton setTitle:@"1.5x" forState:UIControlStateNormal];
   [self.view addSubview:_playbackSpeedButton];
   
@@ -99,9 +103,9 @@
   }
   [_playbackButton.layer addSublayer:_playbackButtonLayer];
   [_playbackButton addTarget:self action:@selector(playButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-  
   [_playbackSpeedButton sizeToFit];
   [_playbackSpeedButton setFrame:CGRectMake((width * 3/4) - _playbackSpeedButton.frame.size.width / 2, (_playbackButton.frame.origin.y + playbackButtonSize / 2) - _playbackSpeedButton.frame.size.height / 2, _playbackSpeedButton.frame.size.width, _playbackSpeedButton.frame.size.height)];
+  [_playbackButton setEnabled:_playbackButton.enabled];
 }
 
 - (void)interfaceHasNoFile {
@@ -167,34 +171,47 @@
   BOOL show = [[(UIBarButtonItem*)sender title] isEqualToString:@"Recordings"];
   
   if (show) {
-    DBFilesystem *filesystem = [DBFilesystem sharedFilesystem];
-    if (!filesystem) {
-      QuickAlert(@"Please link your account in settings");
-      return;
-    }
-    
-    [_chooseButtonItem setTitle:@"Cancel"];
-    
-    NSError *error;
-    DBPath *path = [[DBPath root] childPath:@"Soundspeed"];
-    NSArray *fileInfos = [filesystem listFolder:path error:&error];
-    
-    _chooser = [[SSDropboxChooser alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
-                                                               andFiles:fileInfos];
-    _chooser.delegate = self;
-
-    [_chooser setAlpha:0.0f];
-    [self.view addSubview:_chooser];
-    [UIView animateWithDuration:0.25f animations:^{
-      [_chooser setAlpha:1.0f];
-    } completion:^(BOOL finished) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+      DBFilesystem *filesystem = [SSDropboxHelper sharedFilesystem];
       
-    }];
+      NSError *error;
+      DBPath *path = [[DBPath root] childPath:@"Soundspeed"];
+      
+      if (!filesystem.completedFirstSync) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [_chooseButtonItem setEnabled:NO];
+          _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+          [_spinner setFrame:CGRectMake(self.view.frame.size.width / 2 - 10, self.view.frame.size.height / 2 - 10, 10, 10)];
+          [_spinner startAnimating];
+          [self.view addSubview:_spinner];
+          QuickAlert(@"We need to sync with Dropbox. This should take less than a minute and only happens once.");
+        });
+      }
+      
+      NSArray *fileInfos = [filesystem listFolder:path error:&error];
+      if (error) {
+        CJERROR(error);
+      }
+      
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [_chooseButtonItem setEnabled:YES];
+        [_spinner removeFromSuperview];
+        _spinner = nil;
 
-    
-    if (error) {
-      CJERROR(error);
-    }
+        [_chooseButtonItem setTitle:@"Cancel"];
+        _chooser = [[SSDropboxChooser alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
+                                                  andFiles:fileInfos];
+        _chooser.delegate = self;
+        
+        [_chooser setAlpha:0.0f];
+        [self.view addSubview:_chooser];
+        [UIView animateWithDuration:0.25f animations:^{
+          [_chooser setAlpha:1.0f];
+        } completion:^(BOOL finished) {
+          
+        }];
+      });
+    });
   } else {
     [_chooseButtonItem setTitle:@"Recordings"];
     [UIView animateWithDuration:0.25f animations:^{
@@ -265,7 +282,11 @@
 }
 
 -(void)dropboxChooser:(SSDropboxChooser *)chooser choseFile:(DBFileInfo *)fileInfo {
+  [self pauseAudio];
   [self showRecordings:_chooseButtonItem];
+  
+  [self interfaceHasNoFile];
+  [_recordingLabel setText:@"Downloading..."];
   
   __block DBError *dbError;
   DBFile *file = [[DBFilesystem sharedFilesystem] openFile:fileInfo.path error:&dbError];
@@ -275,23 +296,44 @@
   }
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    NSData *recordingData = [file readData:&dbError];
-    NSError *error;
     
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
-    if (error) {
-      CJERROR(error);
-      return;
+    NSData *recordingData;
+    if (!file.status.cached) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [_spinner setFrame:CGRectMake(self.view.frame.size.width / 2 - 10, self.view.frame.size.height / 2 - 10, 10, 10)];
+        [_spinner startAnimating];
+        [self.view addSubview:_spinner];
+      });
+      recordingData = [file readData:&dbError];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [_spinner removeFromSuperview];
+        _spinner = nil;
+      });
+    } else {
+      recordingData = [file readData:&dbError];
     }
     
-    _player = [[AVAudioPlayer alloc] initWithData:recordingData error:&error];
-    
-    if (error) {
-      CJERROR(error);
-      return;
+    if (dbError) {
+      CJERROR(dbError);
+      QuickAlert(@"Error reading file");
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
+      NSError *error;
+      [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
+      if (error) {
+        CJERROR(error);
+        return;
+      }
+      
+      _player = [[AVAudioPlayer alloc] initWithData:recordingData error:&error];
+      
+      if (error) {
+        CJERROR(error);
+        return;
+      }
+      
       [_player setEnableRate:YES];
       [_player setDelegate:self];
       [_player prepareToPlay];
@@ -346,6 +388,18 @@
   [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaInfo];
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+  if (object == _playbackButton) {
+    if ([change objectForKey:@"new"] == [NSNumber numberWithInteger:1]) {
+      [_playbackButtonLayer setStrokeColor:[[SSStylesheet primaryColor] CGColor]];
+    } else {
+      [_playbackButtonLayer setStrokeColor:[[SSStylesheet primaryColorFaded] CGColor]];
+    }
+  }
+}
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {}
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {}

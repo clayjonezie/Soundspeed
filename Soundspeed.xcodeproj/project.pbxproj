@@ -19,6 +19,7 @@
 		6F96E7B4198D5FA1002BF60A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7B3198D5FA1002BF60A /* libz.dylib */; };
 		6F96E7BB198D69F7002BF60A /* Dropbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7BA198D69F7002BF60A /* Dropbox.framework */; };
 		6F96E7C2198DC4E5002BF60A /* SSDropboxChooser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */; };
+		6F96E7C5198EB872002BF60A /* SSDropboxHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F96E7C4198EB872002BF60A /* SSDropboxHelper.m */; };
 		FF6C3B3D1989F58C002475F6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B3C1989F58C002475F6 /* Foundation.framework */; };
 		FF6C3B3F1989F58C002475F6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B3E1989F58C002475F6 /* CoreGraphics.framework */; };
 		FF6C3B411989F58C002475F6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B401989F58C002475F6 /* UIKit.framework */; };
@@ -61,9 +62,11 @@
 		6F96E7AF198D5F8A002BF60A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6F96E7B1198D5F98002BF60A /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		6F96E7B3198D5FA1002BF60A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		6F96E7BA198D69F7002BF60A /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Dropbox.framework; sourceTree = "<group>"; };
+		6F96E7BA198D69F7002BF60A /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Dropbox.framework; path = Soundspeed/Frameworks/Dropbox.framework; sourceTree = "<group>"; };
 		6F96E7C0198DC4E5002BF60A /* SSDropboxChooser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSDropboxChooser.h; path = ../SSDropboxChooser.h; sourceTree = "<group>"; };
 		6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSDropboxChooser.m; path = ../SSDropboxChooser.m; sourceTree = "<group>"; };
+		6F96E7C3198EB872002BF60A /* SSDropboxHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSDropboxHelper.h; sourceTree = "<group>"; };
+		6F96E7C4198EB872002BF60A /* SSDropboxHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSDropboxHelper.m; sourceTree = "<group>"; };
 		FF6C3B391989F58C002475F6 /* Soundspeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soundspeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF6C3B3C1989F58C002475F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FF6C3B3E1989F58C002475F6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -148,6 +151,8 @@
 		6F96E7A8198C8803002BF60A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				6F96E7C3198EB872002BF60A /* SSDropboxHelper.h */,
+				6F96E7C4198EB872002BF60A /* SSDropboxHelper.m */,
 				6F96E7A5198C87BD002BF60A /* SSHelper.h */,
 				6F96E7A6198C87BD002BF60A /* SSHelper.m */,
 				FF6C3B711989F8CC002475F6 /* SSStylesheet.h */,
@@ -341,6 +346,7 @@
 			files = (
 				FF6C3B4D1989F58C002475F6 /* SSAppDelegate.m in Sources */,
 				6F2CF5B4198B33DC00C55E22 /* SSListenViewController.m in Sources */,
+				6F96E7C5198EB872002BF60A /* SSDropboxHelper.m in Sources */,
 				6F96E7A7198C87BD002BF60A /* SSHelper.m in Sources */,
 				FF6C3B731989F8CC002475F6 /* SSStylesheet.m in Sources */,
 				6F2CF5B9198B395300C55E22 /* SSSettingsViewController.m in Sources */,
