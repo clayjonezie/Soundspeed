@@ -17,8 +17,8 @@
   float minutes = floor(lroundf(value)/60);
   float seconds = lroundf(value) - (minutes * 60);
   
-  int roundedSeconds = lroundf(seconds);
-  int roundedMinutes = lroundf(minutes);
+  int roundedSeconds = roundf(seconds);
+  int roundedMinutes = roundf(minutes);
   
   NSString *time = [[NSString alloc]
                     initWithFormat:@"%d:%02d",

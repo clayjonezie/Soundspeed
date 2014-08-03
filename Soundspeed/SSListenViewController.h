@@ -7,7 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
+#import "SSDropboxChooser.h"
 
-@interface SSListenViewController : UIViewController
+
+typedef NS_ENUM(NSInteger, SSPlaybackSpeed) {
+  half,
+  one,
+  oneAndAHalf,
+  two
+};
+
+@interface SSListenViewController : UIViewController<SSDropboxChooserDelegate, AVAudioPlayerDelegate>
+
+@property (nonatomic, readonly) UIBarButtonItem *chooseButtonItem;
 
 @end

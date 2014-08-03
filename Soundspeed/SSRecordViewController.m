@@ -7,6 +7,7 @@
 //
 
 #import "SSRecordViewController.h"
+#import <Dropbox/Dropbox.h>
 
 @interface SSRecordViewController ()
 
@@ -16,9 +17,11 @@
 @property UILabel *dateLabel;
 @property UILabel *timeLabel;
 @property UILabel *titleLabel;
+@property UILabel *elapsedTimeLabel;
 @property UIButton *recordButton;
 
-@property NSString *audioFilePath;
+@property NSURL *audioFilePath;
+@property DBFile *dbFile;
 @property (nonatomic, retain) AVAudioRecorder *recorder;
 @property NSTimer *updateTimeTimer;
 
@@ -60,8 +63,10 @@ const CGFloat SSRecordButtonSize = 75.0f;
     _titleLabel = [UILabel new];
     [_titleLabel setTextColor:[SSStylesheet primaryColor]];
     [_titleLabel setTextAlignment:NSTextAlignmentCenter];
+    
+    _elapsedTimeLabel = [UILabel new];
+    
     [_titleLabel setFont:[SSStylesheet primaryFontLarge]];
-    _timeLabel = [[UILabel alloc] init];
     
     _recordButton = [[UIButton alloc] init];
     
@@ -72,14 +77,15 @@ const CGFloat SSRecordButtonSize = 75.0f;
     [self.view addSubview:_dateLabel];
     [self.view addSubview:_titleLabel];
     [self.view addSubview:_recordButton];
+    [self.view addSubview:_elapsedTimeLabel];
     
     _recording = NO;
   }
   return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
+- (void)viewDidLoad {
+  [super viewDidLoad];
   
   CGFloat width = self.view.frame.size.width;
   
@@ -115,12 +121,13 @@ const CGFloat SSRecordButtonSize = 75.0f;
   [_recordButton setTitle:@"Rec." forState:UIControlStateNormal];
   [_recordButton addTarget:self action:@selector(recordButtonTapped) forControlEvents:UIControlEventTouchUpInside];
   
-  [_timeLabel setFrame:CGRectMake(0, SSRecordViewCellHeight * 7, width, _timeLabel.frame.size.height)];
-  [_timeLabel setTextColor:[SSStylesheet primaryColor]];
-  [_timeLabel setFont:[SSStylesheet primaryFont]];
-  [_timeLabel setTextAlignment:NSTextAlignmentCenter];
-  [_timeLabel setAlpha:0.0f];
+  [_elapsedTimeLabel setFrame:CGRectMake(0, SSRecordViewCellHeight * 7, width, 30.0f)];
+  [_elapsedTimeLabel setTextColor:[SSStylesheet primaryColor]];
+  [_elapsedTimeLabel setFont:[SSStylesheet primaryFontLarge]];
+  [_elapsedTimeLabel setTextAlignment:NSTextAlignmentCenter];
+  [_elapsedTimeLabel setAlpha:0.0f];
   
+  [self updateRecordButton];
   [self updateTitleLabel];
 }
 
@@ -154,31 +161,13 @@ const CGFloat SSRecordButtonSize = 75.0f;
 }
 
 - (void)recordButtonTapped {
-  CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
-  CAAnimationGroup *group = [CAAnimationGroup animation];
-  
+  [_titleField resignFirstResponder];
+
   if (_recording) {
     [self stopRecording];
-    animation.toValue = [NSNumber numberWithFloat:SSRecordButtonSize / 2];
-    animation.fromValue = [NSNumber numberWithFloat:0];
-
-    group.fillMode = kCAFillModeBackwards;
-    _recording = NO;
-    [_recordButton setTitle:@"Rec." forState:UIControlStateNormal];
   } else {
     [self startRecording];
-    animation.toValue = [NSNumber numberWithFloat:0.0f];
-    animation.fromValue = [NSNumber numberWithFloat:SSRecordButtonSize / 2];
-    group.fillMode = kCAFillModeForwards;
-    _recording = YES;
-    [_recordButton setTitle:@"Stop" forState:UIControlStateNormal];
   }
-  
-  group.removedOnCompletion = NO;
-  group.duration = 0.25;
-  [group setAnimations:@[animation]];
-
-  [_recordButton.layer addAnimation:group forKey:@"cornerRadius"];
 }
 
 - (void)startRecording {
@@ -187,22 +176,15 @@ const CGFloat SSRecordButtonSize = 75.0f;
   
   [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
   if (error) {
-    NSLog(@"ERROR: %@ %ld %@", [error domain], (long)[error code], [[error userInfo] description]);
+    CJERROR(error);
     return;
   }
   
   [audioSession setActive:YES error:&error];
   if (error) {
-    NSLog(@"ERROR: %@ %ld %@", [error domain], (long)[error code], [[error userInfo] description]);
+    CJERROR(error);
     return;
   }
-  
-  NSMutableDictionary *recordingSettings = [[NSMutableDictionary alloc] init];
-  [recordingSettings setValue:[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
-  [recordingSettings setValue:[NSNumber numberWithInteger:AVAudioQualityMedium] forKey:AVEncoderAudioQualityKey];
-  [recordingSettings setValue:[NSNumber numberWithFloat:44100.0f] forKey:AVSampleRateKey];
-  [recordingSettings setValue:[NSNumber numberWithInt: 2] forKey:AVNumberOfChannelsKey];
-  [recordingSettings setValue:[NSNumber numberWithInt: 16] forKey:AVLinearPCMBitDepthKey];
   
   NSMutableDictionary *recordSettings = [[NSMutableDictionary alloc] initWithCapacity:10];
 
@@ -214,13 +196,25 @@ const CGFloat SSRecordButtonSize = 75.0f;
   [recordSettings setObject:[NSNumber numberWithInt: AVAudioQualityHigh] forKey: AVEncoderAudioQualityKey];
   
   NSString *filename = [NSString stringWithFormat:@"%@.m4a", _titleLabel.text];
-  _audioFilePath = [[SSHelper documentsDirectory] stringByAppendingPathComponent:filename];
-  NSURL *soundFileURL = [NSURL fileURLWithPath:_audioFilePath];
+  DBPath *newPath = [[DBPath root] childPath:@"Soundspeed"];
+  newPath = [newPath childPath:filename];
+  _dbFile = [[DBFilesystem sharedFilesystem] createFile:newPath error:&error];
+
+  if (error) {
+    CJERROR(error);
+    
+    if (error.code == DBErrorExists) {
+      [self showFilenameExistsAlert];
+    }
+    
+    return;
+  }
   
-  NSLog(@" sound file url %@", soundFileURL);
+  NSString *fullPath = [[SSHelper documentsDirectory] stringByAppendingPathComponent:filename];
+  _audioFilePath = [NSURL fileURLWithPath:fullPath];
   
   NSDictionary *settingsCopy = [NSDictionary dictionaryWithDictionary:recordSettings];
-  _recorder = [[AVAudioRecorder alloc] initWithURL:soundFileURL settings:settingsCopy error:&error];
+  _recorder = [[AVAudioRecorder alloc] initWithURL:_audioFilePath settings:settingsCopy error:&error];
 
   if (error) {
     NSLog(@"ERROR: %@ %ld %@", [error domain], (long)[error code], [[error userInfo] description]);
@@ -235,32 +229,81 @@ const CGFloat SSRecordButtonSize = 75.0f;
   }
   
   [_recorder setDelegate:self];
-  [_recorder record];
-  [UIView animateWithDuration:0.5f animations:^{
-    [_timeLabel setText:@"0:00"];
-    [_timeLabel setAlpha:1.0f];
-  } completion:nil];
-  _updateTimeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(updateTimeLabel) userInfo:nil repeats:YES];
+  _recording = [_recorder record];
+
+  [self updateRecordButton];
+  if (_recording) {
+    _updateTimeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(updateElapsedTimeLabel) userInfo:nil repeats:YES];
+  }
 }
 
 - (void)stopRecording {
   [_recorder stop];
   [_updateTimeTimer invalidate];
+  _recording = NO;
+  [self updateRecordButton];
   
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    if (!_recording) {
-      [UIView animateWithDuration:0.5f animations:^{
-        [_timeLabel setAlpha:0.0f];
-      } completion:^(BOOL finished) {
-        [_timeLabel setText:@""];
-      }];
-    }
-  });
+  NSError *error;
+  [_dbFile writeContentsOfFile:[_audioFilePath path] shouldSteal:YES error:&error];
+  if (error) {
+    NSLog(@"ERROR: %@ %ld %@", [error domain], (long)[error code], [[error userInfo] description]);
+  }
+  
+  _dbFile = nil;
+  _audioFilePath = nil;
 }
 
-- (void)updateTimeLabel {
-  NSLog(@"update time label %lf", [_recorder currentTime]);
-  [_timeLabel setText:[SSHelper timeFormat:[_recorder currentTime]]];
+- (void)updateRecordButton {
+  CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
+  CAAnimationGroup *group = [CAAnimationGroup animation];
+  
+  if (!_recording) {
+    animation.toValue = [NSNumber numberWithFloat:SSRecordButtonSize / 2];
+    animation.fromValue = [NSNumber numberWithFloat:0];
+    group.fillMode = kCAFillModeBackwards;
+    [_recordButton setTitle:@"Rec." forState:UIControlStateNormal];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      if (!_recording) {
+        [UIView animateWithDuration:0.5f animations:^{
+          [_elapsedTimeLabel setAlpha:0.0f];
+        } completion:^(BOOL finished) {
+          [_elapsedTimeLabel setText:@""];
+        }];
+        [_titleField setText:@""];
+        [self updateTitleLabel];
+      }
+    });
+  } else {
+    animation.toValue = [NSNumber numberWithFloat:0.0f];
+    animation.fromValue = [NSNumber numberWithFloat:SSRecordButtonSize / 2];
+    group.fillMode = kCAFillModeForwards;
+    [_recordButton setTitle:@"Stop" forState:UIControlStateNormal];
+    
+    [UIView animateWithDuration:0.5f animations:^{
+      [_elapsedTimeLabel setText:@"0:00"];
+      [_elapsedTimeLabel setAlpha:1.0f];
+    } completion:nil];
+  }
+  
+  group.removedOnCompletion = NO;
+  group.duration = 0.25;
+  [group setAnimations:@[animation]];
+  [_recordButton.layer addAnimation:group forKey:@"cornerRadius"];
+}
+
+- (void)updateElapsedTimeLabel {
+  [_elapsedTimeLabel setText:[SSHelper timeFormat:[_recorder currentTime]]];
+}
+
+- (void)showFilenameExistsAlert {
+  NSString *message = @"That recording already exists. Change the Recording Title or add the date or time";
+  UIAlertView *filenameExistsAlert = [[UIAlertView alloc] initWithTitle:@"Name in use"
+                                                                message:message
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Got it"
+                                                      otherButtonTitles: nil];
+  [filenameExistsAlert show];
 }
 
 @end

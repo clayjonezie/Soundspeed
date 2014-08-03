@@ -20,7 +20,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-  // Override point for customization after application launch.
+
   self.window.backgroundColor = [UIColor whiteColor];
   [self.window makeKeyAndVisible];
   
@@ -32,6 +32,12 @@
   // setup dropbox
   DBAccountManager *accountManager = [[DBAccountManager alloc] initWithAppKey:@"59gw8vscdz1u5oc" secret:@"xg6gb603nla3kn0"];
   [DBAccountManager setSharedManager:accountManager];
+  
+  DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
+  if (account) {
+    DBFilesystem *filesystem = [[DBFilesystem alloc] initWithAccount:account];
+    [DBFilesystem setSharedFilesystem:filesystem];
+  }
   
   return YES;
 }
@@ -61,6 +67,27 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
   // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url
+  sourceApplication:(NSString *)source annotation:(id)annotation {
+  
+  DBAccount *account = [[DBAccountManager sharedManager] handleOpenURL:url];
+  if (account) {
+    return YES;
+    if ([[_navController topViewController] isKindOfClass:[SSSettingsViewController class]]) {
+      [((SSSettingsViewController*)[_navController topViewController]) linkDropboxAccountDidSucceed];
+    } else {
+      QuickAlert(@"Success linking Dropbox Account");
+    }
+    
+    DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];
+    if (account) {
+      DBFilesystem *filesystem = [[DBFilesystem alloc] initWithAccount:account];
+      [DBFilesystem setSharedFilesystem:filesystem];
+    }
+  }
+  return NO;
 }
 
 @end

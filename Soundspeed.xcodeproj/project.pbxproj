@@ -17,8 +17,8 @@
 		6F96E7B0198D5F8A002BF60A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7AF198D5F8A002BF60A /* QuartzCore.framework */; };
 		6F96E7B2198D5F98002BF60A /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7B1198D5F98002BF60A /* libc++.dylib */; };
 		6F96E7B4198D5FA1002BF60A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7B3198D5FA1002BF60A /* libz.dylib */; };
-		6F96E7B9198D60ED002BF60A /* SSAppContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F96E7B8198D60ED002BF60A /* SSAppContext.m */; };
 		6F96E7BB198D69F7002BF60A /* Dropbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7BA198D69F7002BF60A /* Dropbox.framework */; };
+		6F96E7C2198DC4E5002BF60A /* SSDropboxChooser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */; };
 		FF6C3B3D1989F58C002475F6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B3C1989F58C002475F6 /* Foundation.framework */; };
 		FF6C3B3F1989F58C002475F6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B3E1989F58C002475F6 /* CoreGraphics.framework */; };
 		FF6C3B411989F58C002475F6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B401989F58C002475F6 /* UIKit.framework */; };
@@ -61,9 +61,9 @@
 		6F96E7AF198D5F8A002BF60A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6F96E7B1198D5F98002BF60A /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		6F96E7B3198D5FA1002BF60A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		6F96E7B7198D60ED002BF60A /* SSAppContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSAppContext.h; sourceTree = "<group>"; };
-		6F96E7B8198D60ED002BF60A /* SSAppContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSAppContext.m; sourceTree = "<group>"; };
 		6F96E7BA198D69F7002BF60A /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Dropbox.framework; sourceTree = "<group>"; };
+		6F96E7C0198DC4E5002BF60A /* SSDropboxChooser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSDropboxChooser.h; path = ../SSDropboxChooser.h; sourceTree = "<group>"; };
+		6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSDropboxChooser.m; path = ../SSDropboxChooser.m; sourceTree = "<group>"; };
 		FF6C3B391989F58C002475F6 /* Soundspeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soundspeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF6C3B3C1989F58C002475F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FF6C3B3E1989F58C002475F6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -122,6 +122,8 @@
 		6F2CF5B5198B33EF00C55E22 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6F96E7C0198DC4E5002BF60A /* SSDropboxChooser.h */,
+				6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */,
 				FF6C3B741989FD20002475F6 /* SSTabBar.h */,
 				FF6C3B751989FD20002475F6 /* SSTabBar.m */,
 			);
@@ -196,8 +198,6 @@
 				6F96E7A8198C8803002BF60A /* Helpers */,
 				FF6C3B4B1989F58C002475F6 /* SSAppDelegate.h */,
 				FF6C3B4C1989F58C002475F6 /* SSAppDelegate.m */,
-				6F96E7B7198D60ED002BF60A /* SSAppContext.h */,
-				6F96E7B8198D60ED002BF60A /* SSAppContext.m */,
 				6F2CF5B6198B33F400C55E22 /* View Controllers */,
 				6F2CF5B5198B33EF00C55E22 /* Views */,
 				FF6C3B5B1989F58D002475F6 /* SoundspeedTests */,
@@ -284,6 +284,13 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Clay Jones";
 				TargetAttributes = {
+					FF6C3B381989F58C002475F6 = {
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
 					FF6C3B531989F58D002475F6 = {
 						TestTargetID = FF6C3B381989F58C002475F6;
 					};
@@ -335,10 +342,10 @@
 				FF6C3B4D1989F58C002475F6 /* SSAppDelegate.m in Sources */,
 				6F2CF5B4198B33DC00C55E22 /* SSListenViewController.m in Sources */,
 				6F96E7A7198C87BD002BF60A /* SSHelper.m in Sources */,
-				6F96E7B9198D60ED002BF60A /* SSAppContext.m in Sources */,
 				FF6C3B731989F8CC002475F6 /* SSStylesheet.m in Sources */,
 				6F2CF5B9198B395300C55E22 /* SSSettingsViewController.m in Sources */,
 				FF6C3B701989F753002475F6 /* SSTabBarController.m in Sources */,
+				6F96E7C2198DC4E5002BF60A /* SSDropboxChooser.m in Sources */,
 				FF6C3B761989FD20002475F6 /* SSTabBar.m in Sources */,
 				FF6C3B491989F58C002475F6 /* main.m in Sources */,
 				6F2CF5B1198B33D200C55E22 /* SSRecordViewController.m in Sources */,

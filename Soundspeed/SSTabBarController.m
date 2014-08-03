@@ -48,28 +48,23 @@ const CGFloat SSTabBarHeight = 49.0f;
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
   
+#if !TARGET_IPHONE_SIMULATOR
   if (![[DBAccountManager sharedManager] linkedAccount]) {
     [self showLinkAlert];
+    [self settingsButtonTapped];
   }
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
-  [_tabBar setHidden:NO];
-}
-
--(void)viewWillDisappear:(BOOL)animated {
-  [super viewWillDisappear:animated];
-  [_tabBar setHidden:YES];
+#endif
 }
 
 -(void)tabBar:(SSTabBar *)tabBar didSelectButton:(SSTabBarButton)button {
   if (button == SSTabBarButtonRecord) {
     [_listenVC.view removeFromSuperview];
     [self.view addSubview:_recordVC.view];
+    [self.navigationItem setRightBarButtonItem:nil];
   } else if (button == SSTabBarButtonListen) {
     [_recordVC.view removeFromSuperview];
     [self.view addSubview:_listenVC.view];
+    [self.navigationItem setRightBarButtonItem:_listenVC.chooseButtonItem];
   }
 }
 
@@ -78,8 +73,12 @@ const CGFloat SSTabBarHeight = 49.0f;
 }
 
 - (void)showLinkAlert {
-  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"First things first" message:@"Tap Settings to link a Dropbox account." delegate:nil cancelButtonTitle:@"Ok." otherButtonTitles:nil];
+  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"First things first" message:@"Please link a Dropbox account" delegate:nil cancelButtonTitle:@"Ok." otherButtonTitles:nil];
   [alertView show];
+}
+
+- (void)remoteControlReceivedWithEvent:(UIEvent *)receivedEvent {
+  [_listenVC remoteControlReceivedWithEvent:receivedEvent];
 }
 
 @end

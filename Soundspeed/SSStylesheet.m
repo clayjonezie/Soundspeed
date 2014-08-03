@@ -24,7 +24,7 @@
 }
 
 + (UIFont *)primaryFontLarge {
-  return [UIFont fontWithName:@"AppleSDGothicNeo-Light" size:18.0f];
+  return [UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:18.0f];
 }
 
 @end

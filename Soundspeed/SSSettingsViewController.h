@@ -10,4 +10,6 @@
 
 @interface SSSettingsViewController : UIViewController
 
+- (void)linkDropboxAccountDidSucceed;
+
 @end

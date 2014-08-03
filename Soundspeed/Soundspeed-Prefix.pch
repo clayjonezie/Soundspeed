@@ -23,3 +23,6 @@ otherButtonTitles:nil] show])
 
 #import "SSStylesheet.h"
 #import "SSHelper.h"
+
+#define CJERROR(error) NSLog(@"ERROR: %@ %ld %@", [error domain], (long)[error code], [[error userInfo] description])
+
