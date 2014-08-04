@@ -17,9 +17,9 @@
 		6F96E7B0198D5F8A002BF60A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7AF198D5F8A002BF60A /* QuartzCore.framework */; };
 		6F96E7B2198D5F98002BF60A /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7B1198D5F98002BF60A /* libc++.dylib */; };
 		6F96E7B4198D5FA1002BF60A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7B3198D5FA1002BF60A /* libz.dylib */; };
-		6F96E7BB198D69F7002BF60A /* Dropbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F96E7BA198D69F7002BF60A /* Dropbox.framework */; };
 		6F96E7C2198DC4E5002BF60A /* SSDropboxChooser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */; };
 		6F96E7C5198EB872002BF60A /* SSDropboxHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F96E7C4198EB872002BF60A /* SSDropboxHelper.m */; };
+		6F9BF4F2198F488F00CD373E /* Dropbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9BF4F1198F488F00CD373E /* Dropbox.framework */; };
 		FF6C3B3D1989F58C002475F6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B3C1989F58C002475F6 /* Foundation.framework */; };
 		FF6C3B3F1989F58C002475F6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B3E1989F58C002475F6 /* CoreGraphics.framework */; };
 		FF6C3B411989F58C002475F6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6C3B401989F58C002475F6 /* UIKit.framework */; };
@@ -62,11 +62,11 @@
 		6F96E7AF198D5F8A002BF60A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6F96E7B1198D5F98002BF60A /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		6F96E7B3198D5FA1002BF60A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		6F96E7BA198D69F7002BF60A /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Dropbox.framework; path = Soundspeed/Frameworks/Dropbox.framework; sourceTree = "<group>"; };
 		6F96E7C0198DC4E5002BF60A /* SSDropboxChooser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSDropboxChooser.h; path = ../SSDropboxChooser.h; sourceTree = "<group>"; };
 		6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSDropboxChooser.m; path = ../SSDropboxChooser.m; sourceTree = "<group>"; };
 		6F96E7C3198EB872002BF60A /* SSDropboxHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSDropboxHelper.h; sourceTree = "<group>"; };
 		6F96E7C4198EB872002BF60A /* SSDropboxHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSDropboxHelper.m; sourceTree = "<group>"; };
+		6F9BF4F1198F488F00CD373E /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Dropbox.framework; path = Soundspeed/Frameworks/Dropbox.framework; sourceTree = "<group>"; };
 		FF6C3B391989F58C002475F6 /* Soundspeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soundspeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF6C3B3C1989F58C002475F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FF6C3B3E1989F58C002475F6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -103,7 +103,7 @@
 				6F96E7AC198D5F7A002BF60A /* CFNetwork.framework in Frameworks */,
 				6F96E7AA198D5F72002BF60A /* Security.framework in Frameworks */,
 				FF6C3B3F1989F58C002475F6 /* CoreGraphics.framework in Frameworks */,
-				6F96E7BB198D69F7002BF60A /* Dropbox.framework in Frameworks */,
+				6F9BF4F2198F488F00CD373E /* Dropbox.framework in Frameworks */,
 				FF6C3B411989F58C002475F6 /* UIKit.framework in Frameworks */,
 				FF6C3B3D1989F58C002475F6 /* Foundation.framework in Frameworks */,
 			);
@@ -182,7 +182,7 @@
 		FF6C3B3B1989F58C002475F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6F96E7BA198D69F7002BF60A /* Dropbox.framework */,
+				6F9BF4F1198F488F00CD373E /* Dropbox.framework */,
 				6F96E7B3198D5FA1002BF60A /* libz.dylib */,
 				6F96E7B1198D5F98002BF60A /* libc++.dylib */,
 				6F96E7AF198D5F8A002BF60A /* QuartzCore.framework */,
@@ -475,8 +475,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/clay/Downloads/dropbox-ios-sync-sdk-3.0.2",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Soundspeed/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Soundspeed/Soundspeed-Prefix.pch";
@@ -493,8 +493,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/clay/Downloads/dropbox-ios-sync-sdk-3.0.2",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Soundspeed/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Soundspeed/Soundspeed-Prefix.pch";
