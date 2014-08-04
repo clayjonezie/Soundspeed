@@ -11,7 +11,6 @@
 @interface SSHelper : NSObject
 
 +(NSString*)timeFormat:(float)value;
-+ (NSString *) cachesDirectory;
 + (NSString *)documentsDirectory;
 
 @end

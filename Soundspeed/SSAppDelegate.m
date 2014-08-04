@@ -76,7 +76,7 @@
     if ([[_navController topViewController] isKindOfClass:[SSSettingsViewController class]]) {
       [((SSSettingsViewController*)[_navController topViewController]) linkDropboxAccountDidSucceed];
     } else {
-      QuickAlert(@"Success linking Dropbox Account");
+      QuickAlert(@"Success", @"Success linking Dropbox Account");
     }
     
     DBAccount *account = [[DBAccountManager sharedManager] linkedAccount];

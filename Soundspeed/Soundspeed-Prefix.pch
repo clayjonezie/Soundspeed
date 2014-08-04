@@ -15,8 +15,8 @@
     #import <Foundation/Foundation.h>
 #endif
 
-#define QuickAlert(STR) ([[[UIAlertView alloc] initWithTitle:@"Alert" \
-message:STR \
+#define QuickAlert(TITLE, MESSAGE) ([[[UIAlertView alloc] initWithTitle:TITLE \
+message:MESSAGE \
 delegate:nil \
 cancelButtonTitle:@"OK" \
 otherButtonTitles:nil] show])

@@ -225,7 +225,7 @@ const CGFloat SSRecordButtonSize = 75.0f;
   
   BOOL audioHWAvailiable = audioSession.inputAvailable;
   if (!audioHWAvailiable) {
-    QuickAlert(@"Audio hardware is not avaliable");
+    QuickAlert(@"Error", @"Audio hardware is not avaliable");
   }
   
   [_recorder setDelegate:self];
@@ -263,15 +263,27 @@ const CGFloat SSRecordButtonSize = 75.0f;
     group.fillMode = kCAFillModeBackwards;
     [_recordButton setTitle:@"Rec." forState:UIControlStateNormal];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    
+    if ([_titleField.text length]) {
+      [UIView animateWithDuration:0.5f animations:^{
+        [_titleField setAlpha:0.0f];
+      } completion:^(BOOL finished) {
+        [_titleField setText:@""];
+        [self updateTitleLabel];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+          [_titleField setAlpha:1.0f];
+        }];
+      }];
+    }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
       if (!_recording) {
         [UIView animateWithDuration:0.5f animations:^{
           [_elapsedTimeLabel setAlpha:0.0f];
         } completion:^(BOOL finished) {
           [_elapsedTimeLabel setText:@""];
         }];
-        [_titleField setText:@""];
-        [self updateTitleLabel];
       }
     });
   } else {

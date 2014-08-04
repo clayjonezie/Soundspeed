@@ -11,31 +11,28 @@
 @implementation SSHelper
 
 + (NSString*)timeFormat:(float)value{
-  
-  // from this homie http://www.ymc.ch/en/building-a-simple-audioplayer-in-ios
-  
-  float minutes = floor(lroundf(value)/60);
-  float seconds = lroundf(value) - (minutes * 60);
-  
+  value = lroundf(value);
+  float hours = floor(value / 3600);
+  float minutes = floor((value - hours * 3600) / 60);
+  float seconds = floor(value - hours * 3600 - minutes * 60);
+
+  int roundedHours = roundf(hours);
   int roundedSeconds = roundf(seconds);
   int roundedMinutes = roundf(minutes);
   
-  NSString *time = [[NSString alloc]
-                    initWithFormat:@"%d:%02d",
-                    roundedMinutes, roundedSeconds];
-  return time;
-}
-
-+ (NSString *) cachesDirectory {
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-  if ([paths count]) {
-    NSString *bundle = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-    NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:bundle];
-    return path;
+  NSString *time;
+  if (hours) {
+    time = [[NSString alloc]
+            initWithFormat:@"%d:%02d:%02d",
+            roundedHours, roundedMinutes, roundedSeconds];
+    
+    
   } else {
-    NSLog(@"<--- no paths after searching for caches dir");
-    return NULL;
+    time = [[NSString alloc]
+            initWithFormat:@"%02d:%02d",
+            roundedMinutes, roundedSeconds];
   }
+  return time;
 }
 
 + (NSString *)documentsDirectory {

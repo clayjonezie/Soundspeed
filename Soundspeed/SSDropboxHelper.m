@@ -18,14 +18,14 @@
   DBFilesystem *filesystem = [DBFilesystem sharedFilesystem];
   if (!filesystem) {
     if (![[DBAccountManager sharedManager] linkedAccount]) {
-      QuickAlert(@"Please link your account in settings");
+      QuickAlert(@"Need authentication", @"Please link your account in settings");
       return nil;
     } else {
       filesystem = [[DBFilesystem alloc] initWithAccount:[[DBAccountManager sharedManager] linkedAccount]];
       if (filesystem) {
         [DBFilesystem setSharedFilesystem:filesystem];
       } else {
-        QuickAlert(@"Error creating filesystem with your Dropbox account");
+        QuickAlert(@"Error", @"Error creating filesystem with your Dropbox account");
         return nil;
       }
     }

@@ -13,10 +13,10 @@
 
 
 typedef NS_ENUM(NSInteger, SSPlaybackSpeed) {
-  half,
-  one,
-  oneAndAHalf,
-  two
+  SSPlaybackSpeedHalf,
+  SSPlaybackSpeedOne,
+  SSPlaybackSpeedOneAndAHalf,
+  SSPlaybackSpeedTwo
 };
 
 @interface SSListenViewController : UIViewController<SSDropboxChooserDelegate, AVAudioPlayerDelegate>

@@ -17,6 +17,8 @@
 @property (nonatomic) UIButton *playbackSpeedButton;
 @property (nonatomic) UILabel *recordingLabel;
 @property (nonatomic) UISlider *playbackPositionSlider;
+@property (nonatomic) UILabel *playbackPositionLabel;
+@property (nonatomic) UILabel *playbackMaxLabel;
 @property (nonatomic) UIProgressView *downloadSlider;
 
 @property (nonatomic) BOOL scrubbing;
@@ -39,6 +41,7 @@
     [self.view setBackgroundColor:[UIColor whiteColor]];
     _chooseButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Recordings" style:UIBarButtonItemStylePlain target:self action:@selector(showRecordings:)];
     [_chooseButtonItem setTintColor:[SSStylesheet primaryColor]];
+    _playbackSpeed = SSPlaybackSpeedOne;
   }
   return self;
 }
@@ -58,21 +61,35 @@
   _recordingLabel = [UILabel new];
   [_recordingLabel setTextColor:[SSStylesheet primaryColor]];
   [_recordingLabel setFont:[SSStylesheet primaryFontLarge]];
+  [_recordingLabel setAdjustsFontSizeToFitWidth:YES];
+  [_recordingLabel setMinimumScaleFactor:0.5f];
   [self.view addSubview:_recordingLabel];
   
   _playbackButton = [UIButton new];
   [_playbackButton addObserver:self forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:nil];
-
   [self.view addSubview:_playbackButton];
-  [_playbackButton setTitle:@"foo" forState:UIControlStateNormal];
   
   _playbackSpeedButton = [UIButton new];
   [_playbackSpeedButton.titleLabel setFont:[SSStylesheet primaryFontLarge]];
   [_playbackSpeedButton setTitleColor:[SSStylesheet primaryColor] forState:UIControlStateNormal];
   [_playbackSpeedButton setTitleColor:[SSStylesheet primaryColorFaded] forState:UIControlStateHighlighted];
   [_playbackSpeedButton setTitleColor:[SSStylesheet primaryColorFaded] forState:UIControlStateDisabled];
-  [_playbackSpeedButton setTitle:@"1.5x" forState:UIControlStateNormal];
+  [_playbackSpeedButton setTitle:@"1x" forState:UIControlStateNormal];
+  [_playbackSpeedButton addTarget:self action:@selector(playbackSpeedButtonTapped) forControlEvents:UIControlEventTouchUpInside];
   [self.view addSubview:_playbackSpeedButton];
+  
+  _playbackPositionSlider = [UISlider new];
+  [_playbackPositionSlider setTintColor:[SSStylesheet primaryColor]];
+  [self.view addSubview:_playbackPositionSlider];
+  [_playbackPositionSlider addTarget:self action:@selector(playbackPositionSliderMoved) forControlEvents:UIControlEventValueChanged];
+  
+  _playbackPositionLabel = [UILabel new];
+  [_playbackPositionLabel setTextColor:[SSStylesheet primaryColor]];
+  [self.view addSubview:_playbackPositionLabel];
+  
+  _playbackMaxLabel = [UILabel new];
+  [_playbackMaxLabel setTextColor:[SSStylesheet primaryColor]];
+  [self.view addSubview:_playbackMaxLabel];
   
   [self interfaceHasNoFile];
 }
@@ -90,7 +107,7 @@
   CGFloat margin = 7.0f;
   
   [_jumpControl setFrame:CGRectMake(margin, margin, width - 2 * margin, segmentHeight - 2 * margin)];
-  [_recordingLabel setFrame:CGRectMake(margin, segmentHeight, width - 2 * margin, segmentHeight)];
+  [_recordingLabel setFrame:CGRectMake(margin * 2, segmentHeight, width - 4 * margin, segmentHeight)];
   
   CGFloat playbackButtonSize = 50.0f;
   [_playbackButton setFrame:CGRectMake((width - playbackButtonSize) / 2, height - playbackButtonSize - margin * 3, playbackButtonSize, playbackButtonSize)];
@@ -104,16 +121,37 @@
   [_playbackButton.layer addSublayer:_playbackButtonLayer];
   [_playbackButton addTarget:self action:@selector(playButtonTapped) forControlEvents:UIControlEventTouchUpInside];
   [_playbackSpeedButton sizeToFit];
-  [_playbackSpeedButton setFrame:CGRectMake((width * 3/4) - _playbackSpeedButton.frame.size.width / 2, (_playbackButton.frame.origin.y + playbackButtonSize / 2) - _playbackSpeedButton.frame.size.height / 2, _playbackSpeedButton.frame.size.width, _playbackSpeedButton.frame.size.height)];
+  [_playbackSpeedButton setFrame:CGRectMake((width * 3/4) - _playbackSpeedButton.frame.size.width / 2, (_playbackButton.frame.origin.y + playbackButtonSize / 2) - _playbackSpeedButton.frame.size.height / 2, _playbackSpeedButton.frame.size.width * 2, _playbackSpeedButton.frame.size.height)];
   [_playbackButton setEnabled:_playbackButton.enabled];
+  
+  [_playbackPositionSlider setFrame:CGRectMake(margin * 2,
+                                               segmentHeight * 2,
+                                               width - 4 * margin,
+                                               segmentHeight)];
+  
+  [_playbackPositionLabel setFrame:CGRectMake(margin * 2,
+                                              segmentHeight * 3,
+                                              width - 4 * margin,
+                                              segmentHeight)];
+  [_playbackPositionLabel setTextAlignment:NSTextAlignmentLeft];
+  
+  [_playbackMaxLabel setFrame:CGRectMake(margin * 2,
+                                              segmentHeight * 3,
+                                              width - 4 * margin,
+                                              segmentHeight)];
+  [_playbackMaxLabel setTextAlignment:NSTextAlignmentRight];
 }
 
 - (void)interfaceHasNoFile {
+  [_playbackTimer invalidate];
   [_jumpControl setEnabled:NO];
   [_recordingLabel setTextColor:[SSStylesheet primaryColorFaded]];
   [_recordingLabel setText:@"No file selected"];
   [_playbackSpeedButton setEnabled:NO];
   [_playbackButton setEnabled:NO];
+  [_playbackPositionSlider setEnabled:NO];
+  [_playbackPositionLabel setText:@""];
+  [_playbackMaxLabel setText:@""];
 }
 
 - (void)interfaceHasFile:(NSString *)file {
@@ -122,6 +160,8 @@
   [_recordingLabel setText:file];
   [_playbackSpeedButton setEnabled:YES];
   [_playbackButton setEnabled:YES];
+  [_playbackPositionSlider setEnabled:YES];
+  [_playbackPositionLabel setText:[SSHelper timeFormat:0]];
 }
 
 - (void)jumpControlTapped:(id)sender {
@@ -155,13 +195,44 @@
         break;
     }
     
-//    if ([self audioPlayerIsInit]) {
-//      NSTimeInterval currentTime = [self.audioPlayer currentTime];
-//      [self.audioPlayer setCurrentTime:currentTime + jump];
-//      [self updateAudioUIElements];
-//    }
+    if (_player.isPlaying) {
+      NSTimeInterval currentTime = [_player currentTime];
+      [_player setCurrentTime:fmaxf(0.0f, currentTime + jump)];
+      [self updateAudioUIElements];
+    }
     [_jumpControl setSelectedSegmentIndex:UISegmentedControlNoSegment];
   }
+}
+
+- (void)playbackSpeedButtonTapped {
+  NSString *newLabel;
+  switch (_playbackSpeed) {
+    case SSPlaybackSpeedOne:
+      _playbackSpeed = SSPlaybackSpeedOneAndAHalf;
+      newLabel = @"1.5x";
+      break;
+      
+    case SSPlaybackSpeedOneAndAHalf:
+      _playbackSpeed = SSPlaybackSpeedTwo;
+      newLabel = @"2x";
+      break;
+      
+    case SSPlaybackSpeedTwo:
+      _playbackSpeed = SSPlaybackSpeedHalf;
+      newLabel = @"0.5x";
+      break;
+      
+    case SSPlaybackSpeedHalf:
+      _playbackSpeed = SSPlaybackSpeedOne;
+      newLabel = @"1x";
+      break;
+      
+    default:
+      break;
+  }
+  
+  [_playbackSpeedButton setTitle:newLabel forState:UIControlStateNormal];
+  [_player setRate:[self floatForSSPlaybackSpeed:_playbackSpeed]];
 }
 
 - (void)showRecordings:(id)sender {
@@ -184,7 +255,7 @@
           [_spinner setFrame:CGRectMake(self.view.frame.size.width / 2 - 10, self.view.frame.size.height / 2 - 10, 10, 10)];
           [_spinner startAnimating];
           [self.view addSubview:_spinner];
-          QuickAlert(@"We need to sync with Dropbox. This should take less than a minute and only happens once.");
+          QuickAlert(@"Syncing", @"We need to sync with Dropbox. This should take less than a minute and only happens once.");
         });
       }
       
@@ -316,7 +387,7 @@
     
     if (dbError) {
       CJERROR(dbError);
-      QuickAlert(@"Error reading file");
+      QuickAlert(@"Error", @"Error reading file");
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -337,10 +408,35 @@
       [_player setEnableRate:YES];
       [_player setDelegate:self];
       [_player prepareToPlay];
+      [self setupAudioUIElements];
       
       [self interfaceHasFile:fileInfo.path.name];
     });
   });
+}
+
+- (void)setupAudioUIElements {
+  [_playbackPositionSlider setMaximumValue:[_player duration]];
+  [_playbackPositionSlider setMinimumValue:0.0f];
+  [_playbackPositionSlider setValue:0.0f];
+  [_playbackMaxLabel setText:[SSHelper timeFormat:[_player duration]]];
+  [_playbackPositionLabel setText:[SSHelper timeFormat:0.0f]];
+  
+  [_playbackTimer invalidate];
+  _playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(updateAudioUIElements) userInfo:nil repeats:YES];
+}
+
+- (void)updateAudioUIElements {
+  // TODO update ui elements
+  if (!_scrubbing) {
+    [_playbackPositionSlider setValue:[_player currentTime] animated:NO];
+    [_playbackPositionLabel setText:[SSHelper timeFormat:[_player currentTime]]];
+  }
+}
+
+- (void)playbackPositionSliderMoved {
+  [_player setCurrentTime:_playbackPositionSlider.value];
+  [self updateAudioUIElements];
 }
 
 - (void)pauseAudio {
@@ -353,13 +449,18 @@
   [self updateNowPlayingInfo];
 }
 
-- (void)updateAudioUIElements {
-  
-}
-
 - (void)playAudio {
+  if ([[AVAudioSession sharedInstance] category] != AVAudioSessionCategoryPlayback) {
+    NSError *error;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
+    if (error) {
+      CJERROR(error);
+    }
+  }
+  
   _playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(updateAudioUIElements) userInfo:nil repeats:YES];
   [_player play];
+  [_player setRate:[self floatForSSPlaybackSpeed:_playbackSpeed]];
   
   [_playbackButtonLayer removeFromSuperlayer];
   _playbackButtonLayer = [self pauseButtonLayerInFrame:_playbackButton.frame];
@@ -401,11 +502,28 @@
   }
 }
 
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {}
-- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {}
-- (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player {}
-- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player withOptions:(NSUInteger)flags {}
-- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player withFlags:(NSUInteger)flags {}
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
+  [self pauseAudio];
+}
+
+- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
+  CJERROR(error);
+  QuickAlert(@"Error", @"Audio decode error occurred.");
+}
+
+- (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player {
+  [self pauseAudio];
+}
+- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player withOptions:(NSUInteger)flags {
+  if ([[AVAudioSession sharedInstance] category] != AVAudioSessionCategoryPlayback) {
+    NSError *error;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
+    if (error) {
+      CJERROR(error);
+    }
+  }
+  [self playAudio];
+}
 
 - (void)remoteControlReceivedWithEvent:(UIEvent *)receivedEvent {
   if (receivedEvent.type == UIEventTypeRemoteControl) {
@@ -429,6 +547,27 @@
       default:
         break;
     }
+  }
+}
+
+- (CGFloat)floatForSSPlaybackSpeed:(SSPlaybackSpeed)playbackSpeed {
+  switch (playbackSpeed) {
+    case SSPlaybackSpeedOne:
+      return 1.0f;
+      break;
+    case SSPlaybackSpeedOneAndAHalf:
+      return 1.5f;
+      break;
+    case SSPlaybackSpeedTwo:
+      return 2.0f;
+      break;
+    case SSPlaybackSpeedHalf:
+      return 0.5f;
+      break;
+      
+    default:
+      return 1.0f;
+      break;
   }
 }
 
