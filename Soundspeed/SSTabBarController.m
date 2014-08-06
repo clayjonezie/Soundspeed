@@ -81,4 +81,8 @@ const CGFloat SSTabBarHeight = 49.0f;
   [_listenVC remoteControlReceivedWithEvent:receivedEvent];
 }
 
++ (CGFloat)tabBarHeight {
+  return SSTabBarHeight;
+}
+
 @end

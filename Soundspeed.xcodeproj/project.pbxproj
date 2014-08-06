@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F2BDAD21991E5CC00D33637 /* SSAboutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2BDAD11991E5CC00D33637 /* SSAboutView.m */; };
 		6F2CF5B1198B33D200C55E22 /* SSRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CF5B0198B33D200C55E22 /* SSRecordViewController.m */; };
 		6F2CF5B4198B33DC00C55E22 /* SSListenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CF5B3198B33DC00C55E22 /* SSListenViewController.m */; };
 		6F2CF5B9198B395300C55E22 /* SSSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2CF5B8198B395300C55E22 /* SSSettingsViewController.m */; };
@@ -48,6 +49,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6F2BDAD01991E5CC00D33637 /* SSAboutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSAboutView.h; sourceTree = "<group>"; };
+		6F2BDAD11991E5CC00D33637 /* SSAboutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSAboutView.m; sourceTree = "<group>"; };
 		6F2CF5AF198B33D200C55E22 /* SSRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSRecordViewController.h; sourceTree = "<group>"; };
 		6F2CF5B0198B33D200C55E22 /* SSRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSRecordViewController.m; sourceTree = "<group>"; };
 		6F2CF5B2198B33DC00C55E22 /* SSListenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSListenViewController.h; sourceTree = "<group>"; };
@@ -129,6 +132,8 @@
 				6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */,
 				FF6C3B741989FD20002475F6 /* SSTabBar.h */,
 				FF6C3B751989FD20002475F6 /* SSTabBar.m */,
+				6F2BDAD01991E5CC00D33637 /* SSAboutView.h */,
+				6F2BDAD11991E5CC00D33637 /* SSAboutView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -344,6 +349,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F2BDAD21991E5CC00D33637 /* SSAboutView.m in Sources */,
 				FF6C3B4D1989F58C002475F6 /* SSAppDelegate.m in Sources */,
 				6F2CF5B4198B33DC00C55E22 /* SSListenViewController.m in Sources */,
 				6F96E7C5198EB872002BF60A /* SSDropboxHelper.m in Sources */,

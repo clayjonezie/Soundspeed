@@ -6,13 +6,18 @@
 //  Copyright (c) 2014 Clay Jones. All rights reserved.
 //
 
-#import "SSSettingsViewController.h"
 #import <Dropbox/Dropbox.h>
+#import "SSSettingsViewController.h"
+#import "SSAboutView.h"
+#import "SSTabBarController.h"
 
 @interface SSSettingsViewController ()
 
 @property UIButton *linkDropboxButton;
 @property UIButton *unlinkDropboxButton;
+@property UIBarButtonItem *aboutToggleButton;
+@property BOOL aboutScreenIsVisible;
+@property SSAboutView *aboutView;
 
 @end
 
@@ -21,15 +26,33 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
-    
+    _aboutScreenIsVisible = NO;
+    _aboutView = [[SSAboutView alloc] initWithFrame:CGRectZero];
   }
   return self;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  
   [self.view setBackgroundColor:[UIColor whiteColor]];
   [self.navigationController.navigationBar setTintColor:[SSStylesheet primaryColor]];
+  
+  [_aboutView setFrame:CGRectMake(0,
+                                  self.navigationController.navigationBar.frame.size.height +
+                                  [[UIApplication sharedApplication] statusBarFrame].size.height,
+                                  self.view.frame.size.width,
+                                  self.view.frame.size.height -
+                                  self.navigationController.navigationBar.frame.size.height - [SSTabBarController tabBarHeight])];
+  _aboutScreenIsVisible = NO;
+  [_aboutView removeFromSuperview];
+  _aboutToggleButton.title = @"About";
+
+  _aboutToggleButton = [[UIBarButtonItem alloc] initWithTitle:@"About"
+                                                                style:UIBarButtonItemStylePlain
+                                                               target:self
+                                                               action:@selector(aboutButtonTapped)];
+  [self.navigationItem setRightBarButtonItem:_aboutToggleButton];
   
   [_linkDropboxButton removeFromSuperview];
   _linkDropboxButton = [[UIButton alloc] init];
@@ -101,5 +124,24 @@
   [self viewWillAppear:NO];
 }
 
+- (void)aboutButtonTapped {
+  if (_aboutScreenIsVisible) {
+    [UIView animateWithDuration:0.5 animations:^{
+      [_aboutView setAlpha:0.0f];
+    } completion:^(BOOL finished) {
+      [_aboutView removeFromSuperview];
+    }];
+    _aboutToggleButton.title = @"About";
+    _aboutScreenIsVisible = NO;
+  } else {
+    [self.view addSubview:_aboutView];
+    [UIView animateWithDuration:0.5 animations:^{
+      [_aboutView setAlpha:1.0f];
+    } completion:^(BOOL finished) {
+    }];
+    _aboutToggleButton.title = @"Done";
+    _aboutScreenIsVisible = YES;
+  }
+}
 
 @end

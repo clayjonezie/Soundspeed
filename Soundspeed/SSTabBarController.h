@@ -19,4 +19,6 @@
 @property (nonatomic) SSRecordViewController *recordVC;
 @property (nonatomic) SSSettingsViewController *settingsVC;
 
++ (CGFloat)tabBarHeight;
+
 @end
