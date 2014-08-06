@@ -16,8 +16,7 @@
 
 @implementation SSAboutView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
       _textView = [[UITextView alloc] initWithFrame:frame];

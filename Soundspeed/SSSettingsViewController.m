@@ -16,7 +16,7 @@
 @property UIButton *linkDropboxButton;
 @property UIButton *unlinkDropboxButton;
 @property UIBarButtonItem *aboutToggleButton;
-@property BOOL aboutScreenIsVisible;
+@property BOOL aboutViewIsVisible;
 @property SSAboutView *aboutView;
 
 @end
@@ -26,7 +26,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
-    _aboutScreenIsVisible = NO;
+    _aboutViewIsVisible = NO;
     _aboutView = [[SSAboutView alloc] initWithFrame:CGRectZero];
   }
   return self;
@@ -44,7 +44,7 @@
                                   self.view.frame.size.width,
                                   self.view.frame.size.height -
                                   self.navigationController.navigationBar.frame.size.height - [SSTabBarController tabBarHeight])];
-  _aboutScreenIsVisible = NO;
+  _aboutViewIsVisible = NO;
   [_aboutView removeFromSuperview];
   _aboutToggleButton.title = @"About";
 
@@ -125,14 +125,14 @@
 }
 
 - (void)aboutButtonTapped {
-  if (_aboutScreenIsVisible) {
+  if (_aboutViewIsVisible) {
     [UIView animateWithDuration:0.5 animations:^{
       [_aboutView setAlpha:0.0f];
     } completion:^(BOOL finished) {
       [_aboutView removeFromSuperview];
     }];
     _aboutToggleButton.title = @"About";
-    _aboutScreenIsVisible = NO;
+    _aboutViewIsVisible = NO;
   } else {
     [self.view addSubview:_aboutView];
     [UIView animateWithDuration:0.5 animations:^{
@@ -140,7 +140,7 @@
     } completion:^(BOOL finished) {
     }];
     _aboutToggleButton.title = @"Done";
-    _aboutScreenIsVisible = YES;
+    _aboutViewIsVisible = YES;
   }
 }
 
