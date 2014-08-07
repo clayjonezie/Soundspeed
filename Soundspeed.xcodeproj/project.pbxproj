@@ -65,8 +65,8 @@
 		6F96E7AF198D5F8A002BF60A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6F96E7B1198D5F98002BF60A /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		6F96E7B3198D5FA1002BF60A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		6F96E7C0198DC4E5002BF60A /* SSDropboxChooser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSDropboxChooser.h; path = ../SSDropboxChooser.h; sourceTree = "<group>"; };
-		6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSDropboxChooser.m; path = ../SSDropboxChooser.m; sourceTree = "<group>"; };
+		6F96E7C0198DC4E5002BF60A /* SSDropboxChooser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSDropboxChooser.h; sourceTree = "<group>"; };
+		6F96E7C1198DC4E5002BF60A /* SSDropboxChooser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSDropboxChooser.m; sourceTree = "<group>"; };
 		6F96E7C3198EB872002BF60A /* SSDropboxHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSDropboxHelper.h; sourceTree = "<group>"; };
 		6F96E7C4198EB872002BF60A /* SSDropboxHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSDropboxHelper.m; sourceTree = "<group>"; };
 		6F9BF4F1198F488F00CD373E /* Dropbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Dropbox.framework; path = Soundspeed/Frameworks/Dropbox.framework; sourceTree = "<group>"; };
