@@ -73,7 +73,7 @@ const CGFloat SSTabBarHeight = 49.0f;
 }
 
 - (void)showLinkAlert {
-  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"First things first" message:@"Please link a Dropbox account" delegate:nil cancelButtonTitle:@"Ok." otherButtonTitles:nil];
+  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"First things first" message:@"Please link a Dropbox account. \nSee About for details." delegate:nil cancelButtonTitle:@"Ok." otherButtonTitles:nil];
   [alertView show];
 }
 
